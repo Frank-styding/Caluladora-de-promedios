@@ -19,4 +19,24 @@ export const Theme = {
   background: Colors.dart1,
   primary: Colors.blue,
   secundary: Colors.dart0,
+  tertiary: Colors.dart2,
+  quatary: Colors.dart3,
+  navActive: Colors.blue,
+  navColor: Colors.gray0,
+  navHover: Colors.skyblue,
+  badGrade: Colors.red,
+  halfGrade: Colors.yellow,
+  goodGrade: Colors.green,
+  fontFamily: "inter",
+  h2: {
+    fontSize: "36px",
+  },
+  h3: {
+    fontSize: "24px",
+  },
+  h4: {
+    fontSize: "18px",
+  },
+  grageColor: Colors.blue,
+  textColor: Colors.gray0,
 } as const;

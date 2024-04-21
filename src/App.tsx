@@ -1,33 +1,17 @@
-import styled from "styled-components";
-import { Theme } from "./theme";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
+import { Layout } from "./views/Layout/Layout";
+import { useEffect } from "react";
+import { Courses } from "./views/Courses/Courses";
+import { Settings } from "./views/Settings/Settings";
+import { Statistics } from "./views/Statistics/Statistics";
+import { Course } from "./views/Course/Course";
 
-const LayoutContainer = styled.div`
-  width: 100vw;
-  height: 100vh;
-  background-color: ${Theme.background};
-  display: grid;
-  grid-template-rows: auto 80px;
-`;
-
-function ViewCourses() {
+function Home() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    navigate("/courses");
+  });
   return <></>;
-}
-
-const StyledNav = styled.nav`
-  grid-row: 2;
-  background-color: ${Theme.secundary};
-`;
-function Nav() {
-  return <StyledNav></StyledNav>;
-}
-
-function Layout() {
-  return (
-    <LayoutContainer>
-      <Nav />
-    </LayoutContainer>
-  );
 }
 
 function App() {
@@ -35,7 +19,11 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/" element={<ViewCourses />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/statistics" element={<Statistics />} />
+          <Route path="/course/:name" element={<Course />} />
         </Route>
       </Routes>
     </BrowserRouter>
