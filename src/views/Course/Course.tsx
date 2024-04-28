@@ -87,15 +87,17 @@ export function Course() {
       <ScroolContainer>
         <Container>
           {data &&
-            Object.keys(data).map((examName, idx) => (
-              <Exam
-                courseName={courseName || ""}
-                name={examName}
-                key={examName}
-                open={idx == active}
-                onClick={() => setActive(idx != active ? idx : -1)}
-              />
-            ))}
+            Object.keys(data)
+              .filter((i) => i != "_")
+              .map((examName, idx) => (
+                <Exam
+                  courseName={courseName || ""}
+                  name={examName}
+                  key={examName}
+                  open={idx == active}
+                  onClick={() => setActive(idx != active ? idx : -1)}
+                />
+              ))}
         </Container>
         {data && (
           <FinalGrade $color={indicatorColor}>

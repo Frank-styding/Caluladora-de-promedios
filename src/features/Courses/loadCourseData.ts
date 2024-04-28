@@ -1,185 +1,6 @@
-import { CoursesState, ICoursesData } from "./CoursesState";
+import { COURSE_DATA } from "./COURSE_DATA";
+import { CoursesState, ExamData } from "./CoursesState";
 
-const COURSE_DATA: ICoursesData = {
-  "Cálculo Integral": {
-    pc: {
-      count: 4,
-      deleteCount: 1,
-      weight: 0.3,
-      precision: 1,
-      round: false,
-    },
-    pd: {
-      count: 4,
-      deleteCount: 1,
-      weight: 0.1,
-      precision: 1,
-      round: false,
-    },
-    parcial: {
-      count: 1,
-      deleteCount: 0,
-      weight: 0.3,
-      precision: 1,
-      round: false,
-    },
-    final: {
-      count: 1,
-      deleteCount: 0,
-      weight: 0.3,
-      precision: 1,
-      round: false,
-    },
-  },
-  "Cálculo en Varias Variables": {
-    pc: {
-      count: 4,
-      deleteCount: 1,
-      weight: 0.3,
-      precision: 1,
-      round: false,
-    },
-    pd: {
-      count: 4,
-      deleteCount: 1,
-      weight: 0.1,
-      precision: 1,
-      round: false,
-    },
-    parcial: {
-      count: 1,
-      deleteCount: 0,
-      weight: 0.3,
-      precision: 1,
-      round: false,
-    },
-    final: {
-      count: 1,
-      deleteCount: 0,
-      weight: 0.3,
-      precision: 1,
-      round: false,
-    },
-  },
-  "Diseño digital": {
-    lab: {
-      count: 10,
-      deleteCount: 1,
-      weight: 0.2,
-      precision: 1,
-      round: false,
-    },
-    tarea: {
-      count: 1,
-      deleteCount: 0,
-      weight: 0.2,
-      precision: 1,
-      round: false,
-    },
-    parcial: {
-      count: 1,
-      deleteCount: 0,
-      weight: 0.3,
-      precision: 1,
-      round: false,
-    },
-    final: {
-      count: 1,
-      deleteCount: 0,
-      weight: 0.3,
-      precision: 1,
-      round: false,
-    },
-  },
-
-  "Física 2": {
-    pc: {
-      count: 4,
-      deleteCount: 1,
-      weight: 0.4,
-      precision: 1,
-      round: false,
-    },
-    parcial: {
-      count: 1,
-      deleteCount: 0,
-      weight: 0.3,
-      precision: 1,
-      round: false,
-    },
-    final: {
-      count: 1,
-      deleteCount: 0,
-      weight: 0.3,
-      precision: 1,
-      round: false,
-    },
-  },
-
-  "Lab Física": {
-    labs: {
-      count: 6,
-      deleteCount: 1,
-      weight: 1,
-      precision: 1,
-      round: false,
-    },
-  },
-
-  psicologia: {
-    participación: {
-      count: 1,
-      deleteCount: 0,
-      weight: 0.1,
-      precision: 1,
-      round: false,
-    },
-    permanete: {
-      count: 4,
-      deleteCount: 0,
-      weight: 0.2,
-      precision: 1,
-      round: false,
-    },
-    parcial: {
-      count: 1,
-      deleteCount: 0,
-      weight: 0.4,
-      precision: 1,
-      round: false,
-    },
-    oral: {
-      count: 1,
-      deleteCount: 0,
-      weight: 0.3,
-      precision: 1,
-      round: false,
-    },
-  },
-  "Estructuras Discretas": {
-    pc: {
-      count: 4,
-      deleteCount: 1,
-      weight: 0.3,
-      precision: 1,
-      round: false,
-    },
-    parical: {
-      count: 1,
-      deleteCount: 0,
-      weight: 0.3,
-      precision: 1,
-      round: false,
-    },
-    final: {
-      count: 1,
-      deleteCount: 0,
-      weight: 0.4,
-      precision: 1,
-      round: false,
-    },
-  },
-};
 function initilizeData(state: CoursesState) {
   state.coursesData ||= COURSE_DATA;
   const courseNames = Object.keys(state.coursesData);
@@ -189,9 +10,10 @@ function initilizeData(state: CoursesState) {
   courseNames.forEach((courseName) => {
     const examNames = Object.keys(state.coursesData[courseName]);
     examNames.forEach((examName) => {
+      if (examName == "_") return;
       state.grades[courseName] ||= {};
       state.grades[courseName][examName] ||= new Array(
-        state.coursesData[courseName][examName].count
+        (state.coursesData[courseName][examName] as ExamData).count
       ).fill(-1);
       state.finalGrades[courseName] ||= 0;
       state.avarages[courseName] ||= {};
@@ -209,6 +31,12 @@ export function loadCourseData(): CoursesState {
       data = JSON.parse(stringifyData);
     } catch {
       console.log("Error parsing");
+    }
+  }
+  const courseData = (data as CoursesState)["coursesData"];
+  if (courseData != undefined) {
+    if (Object.values(courseData).some((data) => data._ == undefined)) {
+      data = {};
     }
   }
 

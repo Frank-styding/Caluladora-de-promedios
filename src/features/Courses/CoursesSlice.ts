@@ -1,6 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 import { loadCourseData } from "./loadCourseData";
+import { ExamData } from "./CoursesState";
+
+const setPrecision = (
+  value: number,
+  precision: number,
+  fixed: boolean = false
+) => {
+  if (fixed) {
+    return parseFloat(value.toFixed(precision));
+  }
+  const divider = Math.pow(10, precision);
+  return Math.trunc(value * divider) / divider;
+};
 
 const initialState = loadCourseData();
 export const gradesSlice = createSlice({
@@ -19,10 +32,12 @@ export const gradesSlice = createSlice({
       const { courseName, examName, idx, grade } = action.payload;
       state.grades[courseName][examName][idx] = grade;
       const courseData = state.coursesData;
-      const finalGrade = Object.keys(courseData[courseName])
+      let finalGrade = Object.keys(courseData[courseName])
         .map((examName) => {
-          const { count, deleteCount, weight, precision, round } =
-            courseData[courseName][examName];
+          if (examName == "_") return 0;
+          const { count, deleteCount, weight, precision, fixed } = courseData[
+            courseName
+          ][examName] as ExamData;
           let grades = state.grades[courseName][examName].slice();
           grades.sort();
           grades = grades.map((i) => {
@@ -33,19 +48,22 @@ export const gradesSlice = createSlice({
           let avarage =
             grades.slice(deleteCount).reduce((a, b) => a + b, 0) /
             (count - deleteCount);
-
-          if (round) {
-            avarage = parseFloat(avarage.toFixed(precision));
-          } else {
-            const divider = Math.pow(10, precision);
-            avarage = Math.trunc(avarage * divider) / divider;
-          }
+          avarage = setPrecision(avarage, precision, fixed);
           state.avarages[courseName][examName] = avarage;
           return avarage * weight;
         })
         .reduce((a, b) => a + b, 0);
+      finalGrade = setPrecision(
+        finalGrade,
+        courseData[courseName]["_"].precision,
+        courseData[courseName]["_"].fixed
+      );
 
-      state.finalGrades[courseName] = Math.trunc(finalGrade * 100) / 100;
+      if (courseData[courseName]["_"].round) {
+        finalGrade = Math.round(finalGrade);
+      }
+
+      state.finalGrades[courseName] = finalGrade;
     },
     getExamState: (
       state,
@@ -58,22 +76,27 @@ export const gradesSlice = createSlice({
       const gradesStarted = state.grades[action.payload.courseName][
         action.payload.examName
       ].filter((grades) => grades != -1);
+      const courseData = state.coursesData[action.payload.courseName];
 
       if (gradesStarted.length == 0) {
         action.payload.examState = -1;
         return state;
       }
 
-      const finalgrades =
+      let finalGrade =
         gradesStarted.reduce((a, b) => a + b, 0) / gradesStarted.length;
+
+      if (courseData["_"].round) {
+        finalGrade = Math.round(finalGrade);
+      }
 
       action.payload.examState = -1;
       //! TODO change value in settings
-      if (0 <= finalgrades && finalgrades < 11) {
+      if (0 <= finalGrade && finalGrade < 11) {
         action.payload.examState = 0;
-      } else if (11 <= finalgrades && finalgrades <= 16) {
+      } else if (11 <= finalGrade && finalGrade <= 16) {
         action.payload.examState = 1;
-      } else if (16 < finalgrades && finalgrades <= 20) {
+      } else if (16 < finalGrade && finalGrade <= 20) {
         action.payload.examState = 2;
       }
     },
@@ -88,15 +111,16 @@ export const gradesSlice = createSlice({
       const courseGrades = state.grades[action.payload.courseName];
       const courseData = state.coursesData[action.payload.courseName];
       let maxFinalGrade = 0;
-      const finalGrade = Object.keys(courseGrades)
+      let finalGrade = Object.keys(courseGrades)
         .map((examName) => {
+          if (examName == "_") return 0;
           const gradesStarted = courseGrades[examName].filter(
             (grades) => grades != -1
           );
           if (gradesStarted.length == 0) {
             return 0;
           }
-          const { weight } = courseData[examName];
+          const { weight } = courseData[examName] as ExamData;
           const finalgrades =
             gradesStarted.reduce((a, b) => a + b, 0) / gradesStarted.length;
           maxFinalGrade +=
@@ -104,9 +128,13 @@ export const gradesSlice = createSlice({
           return finalgrades * weight;
         })
         .reduce((a, b) => a + b, 0);
+      finalGrade = setPrecision(
+        finalGrade,
+        courseData["_"].precision,
+        courseData["_"].fixed
+      );
 
       const aux = (finalGrade / maxFinalGrade) * 100;
-      console.log(finalGrade, maxFinalGrade);
       action.payload.courseState = -1;
       if (0 < aux && aux <= 51) {
         action.payload.courseState = 0;

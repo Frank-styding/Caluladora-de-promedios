@@ -11,6 +11,7 @@ import {
 import { useAppSelector } from "../../hooks/reduxHooks";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
+import { ExamData } from "../../features/Courses/CoursesState";
 
 const ExamContainer1 = styled.div`
   width: 90%;
@@ -89,8 +90,9 @@ export function Exam({
   open: boolean;
   courseName: string;
 }) {
-  const examInfo =
-    useAppSelector(getCoursesData)[courseName as string][examName];
+  const examInfo = useAppSelector(getCoursesData)[courseName as string][
+    examName
+  ] as ExamData;
 
   const avarageGrades = useAppSelector(getCoursesAvarageGrades)[courseName][
     examName
