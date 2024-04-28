@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { GearIcon } from "../icons/GearIcon";
 import { CoursesIcon } from "../icons/CoursesIcon";
 import { StatisticsIcon } from "../icons/StatisticsIcon";
+import { useState } from "react";
 
 const StyledNav = styled.nav`
   width: 100%;
@@ -25,21 +26,36 @@ const StyledLink = styled(Link)`
   }
 `;
 
-export function Nav() {
+const NavLink = ({
+  to,
+  icon,
+}: {
+  to: string;
+  icon: ({ color }: { color: string }) => JSX.Element;
+}) => {
   const location = useLocation();
+  const [onHover, setOnHover] = useState(false);
+
   const activeColor = (path: string) =>
     location.pathname.startsWith(path) ? Theme.navActive : Theme.navColor;
+
+  return (
+    <StyledLink
+      onMouseOver={() => setOnHover(true)}
+      onMouseLeave={() => setOnHover(false)}
+      to={to}
+    >
+      {icon({ color: onHover ? Theme.navHover : activeColor(to) })}
+    </StyledLink>
+  );
+};
+
+export function Nav() {
   return (
     <StyledNav>
-      <StyledLink to={"/settings"}>
-        <GearIcon color={activeColor("/settings")} />
-      </StyledLink>
-      <StyledLink to={"/courses"}>
-        <CoursesIcon color={activeColor("/course")} />
-      </StyledLink>
-      <StyledLink to={"/statistics"}>
-        <StatisticsIcon color={activeColor("/statistics")} />
-      </StyledLink>
+      <NavLink to={"/settings"} icon={GearIcon} />
+      <NavLink to={"/courses"} icon={CoursesIcon} />
+      <NavLink to={"/statistics"} icon={StatisticsIcon} />
     </StyledNav>
   );
 }

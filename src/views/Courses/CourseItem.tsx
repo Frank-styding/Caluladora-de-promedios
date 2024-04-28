@@ -2,7 +2,13 @@ import styled from "styled-components";
 import { Theme } from "../../theme";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../hooks/reduxHooks";
-import { getCoursesFinalGrades } from "../../features/Courses/CoursesSlice";
+import {
+  getCoursesFinalGrades,
+  getCoursesGrades,
+  getCourseState,
+} from "../../features/Courses/CoursesSlice";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 const StyledCourseItem = styled(Link)`
   display: grid;
@@ -47,9 +53,24 @@ const StyledGrade = styled.h2`
 export function CourseItem({ name }: { name: string }) {
   const finalGrade = useAppSelector(getCoursesFinalGrades)[name];
 
+  const grades = useAppSelector(getCoursesGrades)[name || ""];
+  const dispatch = useDispatch();
+  const [indicatorColor, setIndicatorColor] = useState("");
+
+  useEffect(() => {
+    const state = dispatch(getCourseState({ courseName: name || "" })).payload
+      .courseState;
+    const color = [
+      Theme.noneGrade,
+      Theme.badGrade,
+      Theme.halfGrade,
+      Theme.goodGrade,
+    ][(state == undefined ? -1 : state) + 1];
+    setIndicatorColor(color);
+  }, [dispatch, finalGrade, grades, name]);
   return (
-    <StyledCourseItem to={"/course/" + name}>
-      <StyledIndicator $color={Theme.goodGrade} />
+    <StyledCourseItem to={"/courses/" + name}>
+      <StyledIndicator $color={indicatorColor} />
       <StyledName>{name}</StyledName>
       <StyledGrade>{finalGrade}</StyledGrade>
     </StyledCourseItem>

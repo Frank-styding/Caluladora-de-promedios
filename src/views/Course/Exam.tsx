@@ -5,10 +5,12 @@ import {
   getCoursesAvarageGrades,
   getCoursesData,
   getCoursesGrades,
+  getExamState,
   updateGrade,
 } from "../../features/Courses/CoursesSlice";
 import { useAppSelector } from "../../hooks/reduxHooks";
 import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
 
 const ExamContainer1 = styled.div`
   width: 90%;
@@ -95,8 +97,10 @@ export function Exam({
   ];
 
   const grades = useAppSelector(getCoursesGrades)[courseName][examName];
-
   const dispatch = useDispatch();
+
+  const [indicatorColor, setIndicatorColor] = useState("");
+
   const onChange = (value: string, idx: number) => {
     dispatch(
       updateGrade({
@@ -107,11 +111,25 @@ export function Exam({
       })
     );
   };
+  useEffect(() => {
+    const { examState } = dispatch(
+      getExamState({ courseName, examName })
+    ).payload;
+
+    const color = [
+      Theme.noneGrade,
+      Theme.badGrade,
+      Theme.halfGrade,
+      Theme.goodGrade,
+    ][(examState == undefined ? -1 : examState) + 1];
+
+    setIndicatorColor(color);
+  }, [courseName, dispatch, examName, indicatorColor, grades]);
 
   return (
     <ExamContainer $show={open}>
       <StyledExam onClick={() => onClick()}>
-        <Indicator $color={Theme.halfGrade} />
+        <Indicator $color={indicatorColor} />
         <ExamName>{examName}</ExamName>
         {examInfo.count == 1 ? (
           <GradeInput

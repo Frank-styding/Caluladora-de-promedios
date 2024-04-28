@@ -24,9 +24,11 @@ export const Theme = {
   navActive: Colors.blue,
   navColor: Colors.gray0,
   navHover: Colors.skyblue,
+
   badGrade: Colors.red,
   halfGrade: Colors.yellow,
   goodGrade: Colors.green,
+  noneGrade: Colors.gray0,
   fontFamily: "inter",
   h2: {
     fontSize: "36px",

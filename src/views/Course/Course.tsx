@@ -6,8 +6,11 @@ import { useAppSelector } from "../../hooks/reduxHooks";
 import {
   getCoursesData,
   getCoursesFinalGrades,
+  getCoursesGrades,
+  getCourseState,
 } from "../../features/Courses/CoursesSlice";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 const StyledCourse = styled.div`
   width: 100%;
@@ -36,7 +39,7 @@ const Container = styled.div`
   gap: 20px;
 `;
 
-const FinalGrade = styled.div`
+const FinalGrade = styled.div<{ $color?: string }>`
   position: absolute;
   bottom: 10px;
   left: 50%;
@@ -50,14 +53,33 @@ const FinalGrade = styled.div`
   display: grid;
   place-content: center;
   font-family: ${Theme.fontFamily};
+  border: 1px solid ${({ $color }) => $color};
 `;
 
 export function Course() {
   const { name: courseName } = useParams();
   const [active, setActive] = useState(-1);
-  const data = useAppSelector(getCoursesData)[courseName || ""];
-
   const finalGrades = useAppSelector(getCoursesFinalGrades);
+  const grades = useAppSelector(getCoursesGrades)[courseName || ""];
+  const data = useAppSelector(getCoursesData)[courseName || ""];
+  const dispatch = useDispatch();
+  const [indicatorColor, setIndicatorColor] = useState("");
+
+  useEffect(() => {
+    const state = dispatch(getCourseState({ courseName: courseName || "" }))
+      .payload.courseState;
+    const color = [
+      Theme.noneGrade,
+      Theme.badGrade,
+      Theme.halfGrade,
+      Theme.goodGrade,
+    ][(state == undefined ? -1 : state) + 1];
+    setIndicatorColor(color);
+  }, [courseName, dispatch, finalGrades, grades]);
+
+  if (data == undefined) {
+    return <></>;
+  }
 
   return (
     <StyledCourse>
@@ -75,7 +97,11 @@ export function Course() {
               />
             ))}
         </Container>
-        {data && <FinalGrade>{finalGrades[courseName || ""]}</FinalGrade>}
+        {data && (
+          <FinalGrade $color={indicatorColor}>
+            {finalGrades[courseName || ""]}
+          </FinalGrade>
+        )}
       </ScroolContainer>
     </StyledCourse>
   );
