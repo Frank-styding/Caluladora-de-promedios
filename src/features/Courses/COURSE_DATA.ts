@@ -179,7 +179,7 @@ export const COURSE_DATA: ICoursesData = {
     permanete: {
       count: 4,
       deleteCount: 0,
-      weight: 0.2,
+      weight: 0.4,
       precision: 1,
       fixed: false,
       round: false,
@@ -187,7 +187,7 @@ export const COURSE_DATA: ICoursesData = {
     parcial: {
       count: 1,
       deleteCount: 0,
-      weight: 0.4,
+      weight: 0.2,
       precision: 1,
       fixed: false,
       round: false,

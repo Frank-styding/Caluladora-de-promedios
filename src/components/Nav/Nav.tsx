@@ -54,7 +54,7 @@ export function Nav() {
   return (
     <StyledNav>
       <NavLink to={"/settings"} icon={GearIcon} />
-      <NavLink to={"/courses"} icon={CoursesIcon} />
+      <NavLink to={"/"} icon={CoursesIcon} />
       <NavLink to={"/statistics"} icon={StatisticsIcon} />
     </StyledNav>
   );
