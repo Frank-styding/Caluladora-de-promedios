@@ -43,7 +43,7 @@ const StyledName = styled.h3`
 `;
 const StyledGrade = styled.h2`
   font-size: ${Theme.h2.fontSize};
-  color: ${Theme.grageColor};
+  color: ${Theme.gradeColor};
   font-family: ${Theme.fontFamily};
   display: flex;
   justify-content: center;

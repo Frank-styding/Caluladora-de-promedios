@@ -39,18 +39,18 @@ export const gradesSlice = createSlice({
             courseName
           ][examName] as ExamData;
           let grades = state.grades[courseName][examName].slice();
-          grades.sort();
+          grades.sort((a, b) => a - b);
           grades = grades.map((i) => {
             if (i == -1) return 0;
             return i;
           });
-
-          let avarage =
+          let average =
             grades.slice(deleteCount).reduce((a, b) => a + b, 0) /
             (count - deleteCount);
-          avarage = setPrecision(avarage, precision, fixed);
-          state.avarages[courseName][examName] = avarage;
-          return avarage * weight;
+
+          average = setPrecision(average, precision, fixed);
+          state.averages[courseName][examName] = average;
+          return average * weight;
         })
         .reduce((a, b) => a + b, 0);
       finalGrade = setPrecision(
@@ -121,11 +121,11 @@ export const gradesSlice = createSlice({
             return 0;
           }
           const { weight } = courseData[examName] as ExamData;
-          const finalgrades =
+          const finalGrades =
             gradesStarted.reduce((a, b) => a + b, 0) / gradesStarted.length;
           maxFinalGrade +=
             ((gradesStarted.length * 20) / gradesStarted.length) * weight;
-          return finalgrades * weight;
+          return finalGrades * weight;
         })
         .reduce((a, b) => a + b, 0);
       finalGrade = setPrecision(
@@ -150,8 +150,8 @@ export const gradesSlice = createSlice({
 export const { updateGrade, getExamState, getCourseState } =
   gradesSlice.actions;
 export const getCoursesData = (state: RootState) => state.courses.coursesData;
-export const getCoursesAvarageGrades = (state: RootState) =>
-  state.courses.avarages;
+export const getCoursesAverageGrades = (state: RootState) =>
+  state.courses.averages;
 
 export const getCoursesFinalGrades = (state: RootState) =>
   state.courses.finalGrades;

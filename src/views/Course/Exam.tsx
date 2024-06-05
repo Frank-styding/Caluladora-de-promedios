@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Theme } from "../../theme";
 import { GradeInput } from "./GradeInput";
 import {
-  getCoursesAvarageGrades,
+  getCoursesAverageGrades,
   getCoursesData,
   getCoursesGrades,
   getExamState,
@@ -61,7 +61,7 @@ const Grade = styled.h3`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: ${Theme.grageColor};
+  color: ${Theme.gradeColor};
   font-family: ${Theme.fontFamily};
   font-size: ${Theme.h3.fontSize};
 `;
@@ -94,7 +94,7 @@ export function Exam({
     examName
   ] as ExamData;
 
-  const avarageGrades = useAppSelector(getCoursesAvarageGrades)[courseName][
+  const averageGrades = useAppSelector(getCoursesAverageGrades)[courseName][
     examName
   ];
 
@@ -140,7 +140,7 @@ export function Exam({
             value={grades[0] == -1 ? "" : "" + grades[0]}
           />
         ) : (
-          <Grade>{avarageGrades}</Grade>
+          <Grade>{averageGrades}</Grade>
         )}
       </StyledExam>
       {examInfo.count > 1 && (

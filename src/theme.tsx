@@ -39,6 +39,6 @@ export const Theme = {
   h4: {
     fontSize: "18px",
   },
-  grageColor: Colors.blue,
+  gradeColor: Colors.blue,
   textColor: Colors.gray0,
 } as const;

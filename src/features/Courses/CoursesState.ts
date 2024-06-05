@@ -24,5 +24,5 @@ export interface CoursesState {
   coursesData: ICoursesData;
   grades: IGrades;
   finalGrades: Record<string, number>;
-  avarages: Record<string, Record<string, number>>;
+  averages: Record<string, Record<string, number>>;
 }

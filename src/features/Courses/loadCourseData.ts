@@ -6,7 +6,7 @@ function initilizeData(state: CoursesState) {
   const courseNames = Object.keys(state.coursesData);
   state.grades ||= {};
   state.finalGrades ||= {};
-  state.avarages ||= {};
+  state.averages ||= {};
   courseNames.forEach((courseName) => {
     const examNames = Object.keys(state.coursesData[courseName]);
     examNames.forEach((examName) => {
@@ -16,8 +16,8 @@ function initilizeData(state: CoursesState) {
         (state.coursesData[courseName][examName] as ExamData).count
       ).fill(-1);
       state.finalGrades[courseName] ||= 0;
-      state.avarages[courseName] ||= {};
-      state.avarages[courseName][examName] ||= 0;
+      state.averages[courseName] ||= {};
+      state.averages[courseName][examName] ||= 0;
     });
   });
 }
