@@ -1,8 +1,8 @@
 import { COURSE_DATA } from "./COURSE_DATA";
 import { CoursesState, ExamData } from "./CoursesState";
 
-function initilizeData(state: CoursesState) {
-  state.coursesData ||= COURSE_DATA;
+function initializeData(state: CoursesState) {
+  state.coursesData = COURSE_DATA;
   const courseNames = Object.keys(state.coursesData);
   state.grades ||= {};
   state.finalGrades ||= {};
@@ -40,7 +40,7 @@ export function loadCourseData(): CoursesState {
     }
   }
 
-  initilizeData(data);
+  initializeData(data);
   return data;
 }
 

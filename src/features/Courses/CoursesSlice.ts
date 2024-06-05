@@ -38,21 +38,25 @@ export const gradesSlice = createSlice({
           const { count, deleteCount, weight, precision, fixed } = courseData[
             courseName
           ][examName] as ExamData;
+
           let grades = state.grades[courseName][examName].slice();
           grades.sort((a, b) => a - b);
           grades = grades.map((i) => {
             if (i == -1) return 0;
             return i;
           });
+
           let average =
             grades.slice(deleteCount).reduce((a, b) => a + b, 0) /
             (count - deleteCount);
 
           average = setPrecision(average, precision, fixed);
           state.averages[courseName][examName] = average;
+
           return average * weight;
         })
         .reduce((a, b) => a + b, 0);
+
       finalGrade = setPrecision(
         finalGrade,
         courseData[courseName]["_"].precision,
@@ -121,10 +125,13 @@ export const gradesSlice = createSlice({
             return 0;
           }
           const { weight } = courseData[examName] as ExamData;
+
           const finalGrades =
             gradesStarted.reduce((a, b) => a + b, 0) / gradesStarted.length;
+
           maxFinalGrade +=
             ((gradesStarted.length * 20) / gradesStarted.length) * weight;
+
           return finalGrades * weight;
         })
         .reduce((a, b) => a + b, 0);
